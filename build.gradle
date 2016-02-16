@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
+}
+
+targetCompatibility = "1.8"
+sourceCompatibility = '1.8'
+
+mainClassName = 'nl.ajdevries.App'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.sparkjava:spark-core:2.3'
+}
+
+task stage() {
+  dependsOn shadowJar
+}
+
+tasks.stage.doLast() {
+  def name = "build/libs/${project.name}-${shadowJar.classifier}.jar"
+  copy {
+    from(name) {
+      rename { 'openshift.jar' }
+    }
+    into '.'
+  }
+}
